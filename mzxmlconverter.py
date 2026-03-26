@@ -19,14 +19,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import argparse
-from pyteomics import mzxml
+from pyteomics import mzxml, mzml
 import pandas as pd
 from pathlib import Path
 
 __version__ = "1.0.0"
 
 def prepare_dataframe(mz_list, intensity_list):
-    """Define a dataframe to store data from the mzXML file.
+    """Define a dataframe to store data from the mzML file.
 
         mz_list: A list containing the m/z values
         intensity_list: A list containing the intensity values
@@ -42,7 +42,7 @@ def prepare_dataframe(mz_list, intensity_list):
 def main():
     """The main function of this script."""
     # construct the argument parser and parse the arguments
-    ap = argparse.ArgumentParser(description="Convert mzXML files to simple two column text files.\n Version " + __version__)
+    ap = argparse.ArgumentParser(description="Convert mzML files to simple two column text files.\n Version " + __version__)
     ap.add_argument("-i", "--input", required=True, action="extend", nargs="+", type=str,
                     help="file name for and path to input image")
     ap.add_argument("-o", "--output", required=False, default="output",
@@ -64,10 +64,10 @@ def main():
         print()
         print("Processing " + inputfilename)
 
-        with mzxml.read(inputfilename) as reader:
+        with mzml.read(inputfilename) as reader:
             try:
                 counter = 0
-                while True:  # Loop over all items in the mzXML file
+                while True:  # Loop over all items in the mzML file
                     next_item = next(reader)
 
                     # Prepare Pandas dataframe for output
