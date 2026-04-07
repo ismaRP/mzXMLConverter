@@ -19,6 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import argparse
+import os
 from pyteomics import mzxml, mzml
 import pandas as pd
 from pathlib import Path
@@ -64,7 +65,19 @@ def main():
         print()
         print("Processing " + inputfilename)
 
-        with mzml.read(inputfilename) as reader:
+        _, ext = os.path.splitext(inputfilename)
+
+        if ext in ['.mzml', '.mzML']:
+            read_func = mzml.read
+        elif ext in ['.mzxml', '.mzXML']:
+            read_func = mzxml.read
+        else:
+            raise ValueError(
+                f'Wrong extension/format.\nFound {ext}, valid formats are'
+                'mzml/mzML or mzxml/mzXML.'
+            )
+
+        with read_func(inputfilename) as reader:
             try:
                 counter = 0
                 while True:  # Loop over all items in the mzML file
