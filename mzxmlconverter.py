@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Fri Aug 19 15:29:00 2022
@@ -82,14 +83,15 @@ def main():
                 counter = 0
                 while True:  # Loop over all items in the mzML file
                     next_item = next(reader)
-
+                    spectrum_id = next_item['id']
                     # Prepare Pandas dataframe for output
                     df = prepare_dataframe(next_item["m/z array"], next_item["intensity array"])
-
                     # Write CSV file with TAB as separator
-                    outpath = Path(args["output"]).joinpath(Path(Path(inputfilename).name).stem
-                                                            + "_Files" + str(counter) + ".txt")
-                    print(str(outpath))
+                    outpath = Path(args["output"])
+                    filename = "spectrum_" + str(spectrum_id).replace('=', '_') + ".txt"
+                    outpath = outpath.joinpath(filename)
+                    if args['verbose']:
+                        print(f'Writing {filename}')
                     # Write out float numbers with 6 decimals
                     df.to_csv(str(outpath), sep="\t", header=False, index=False, float_format='%.6f')
 
